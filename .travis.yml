@@ -1,0 +1,33 @@
+language: python
+python:
+  - "3.5.2"
+
+#Django & Database
+addons:
+  postgresql: "9.4"
+
+sudo: required
+
+env:
+  -DJANGO=1.11
+
+before_install:
+  - gem install sass
+  - gem install compass
+  - npm install less
+
+install:
+  - pip install -r requirements.txt
+  - pip install coveralls
+  - pip install redis
+
+# command to run tests
+script:
+  - python manage.py test
+  - coverage run --source=accounts,common manage.py test accounts common
+  - coverage xml
+  - pytest
+  - python-codacy-coverage -r coverage.xml
+
+after_success:
+  coveralls
